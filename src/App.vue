@@ -1,15 +1,12 @@
 <script>
-import SignUp from './components/Sign-up.vue'
 import HomePage from './components/Home-page.vue'
 export default {
   components: {
-    SignUp,
     HomePage
   },
   data() {
     return {
       currentPage: 'HomePage',
-      jsonData: null
     }
   },
   computed: {
@@ -21,20 +18,7 @@ export default {
     openHomePage() {
       this.currentPage = 'HomePage'
       return this.currentPage
-    },
-    openSignUpPage() {
-      this.currentPage = 'SignUp'
-      return this.currentPage
-    },
-    async loadData() {
-      const data = await fetch('https://jsonplaceholder.typicode.com/photos/1')
-      const response = await data.json()
-      this.jsonData = response
-      return this.jsonData
     }
-  },
-  created() {
-    this.loadData()
   }
 }
 </script>
@@ -48,14 +32,15 @@ export default {
     </ul>
   </nav>
 
-  <component v-bind:is="renderPage" />
+  <!-- <component v-bind:is="renderPage" /> -->
+  <Suspense>
+    <HomePage />
 
-  <section class="users">
-    <img v-bind:src="jsonData.thumbnailUrl" v-bind:alt="jsonData.title" loading="lazy" />
-    <p>{{ jsonData.title }}</p>
-  </section>
+    <template v-slot:fallback>
+      Loading...
+    </template>
+  </Suspense>
 
-  <pre>{{ jsonData }}</pre>
 </template>
 
 <style scoped>
